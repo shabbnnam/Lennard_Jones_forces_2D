@@ -1,0 +1,15 @@
+def LJ_force_vector(r, dr_dx, dr_dy ,eps, sigma ): 
+
+     with np.errstate(divide='ignore'):                                           # To ignor the enteries where there would be a devidion of sigma/zero for (r=0)
+         LJ = 24*eps*((sigma)/(r**2))*( 2*((sigma/r)**11) - (sigma/r)**5)         # Calculating the LJ potential for each pair of particles in distance r
+
+     LJ_up = np.triu(LJ, k=1)                                                     # taking the upper triangle of the matrix
+     LJ_up = LJ_up + np.transpose(LJ_up)                                          # making a matrix of LJ forces with zero on diagonal
+
+     LJ_x = np.matmul(LJ_up, np.transpose(dr_dx))                                 # calculating the LJ foces from LJ potential martix
+     LJ_x = np.diagonal(LJ_x, 0, 0, 1)                                            # the diagonal of the matrix is all we need
+
+     LJ_y = np.dot(LJ_up, np.transpose(dr_dy))
+     LJ_y = np.diagonal(LJ_y, 0, 0, 1)
+
+     return LJ_x, LJ_y                                                            # Lennard_Jones forces along x and y ccordinates
